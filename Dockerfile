@@ -1,5 +1,5 @@
 ARG BASE_IMAGE
-FROM centos:${BASE_IMAGE} as builder
+FROM ${BASE_IMAGE} as builder
 
 WORKDIR /opt
 
@@ -10,7 +10,7 @@ ARG SCALA_VER
 
 ARG SPARK="https://archive.apache.org/dist/spark/spark-${SPARK_VER}/spark-${SPARK_VER}-bin-without-hadoop.tgz"
 ARG HADOOP="http://apache.claz.org/hadoop/common/hadoop-${HADOOP_VER}/hadoop-${HADOOP_VER}.tar.gz"
-ARG HIVE="http://apache.claz.org/hive/hive-${HIVE_VER}/apache-hive-${HIVE_VER}-bin.tar.gz"
+ARG HIVE="https://archive.apache.org/dist/hive/hive-${HIVE_VER}/apache-hive-${HIVE_VER}-bin.tar.gz"
 
 # ARG REPOSITORY=""
 # ARG OJDBS="${REPOSITORY}/ojdbc8-full.tar"
@@ -30,15 +30,15 @@ RUN mkdir -p /opt/build && \
     cp /opt/build/spark-${SPARK_VER}-bin-without-hadoop/jars/* /opt/build/apache-hive-${HIVE_VER}-bin/lib/
 
 
-FROM centos:${BASE_IMAGE}
+FROM ${BASE_IMAGE}
 
 ARG SPARK_VER
 ARG HADOOP_VER
 ARG HIVE_VER
 ARG SCALA_VER
 
-ENV JAVA_HOME=/usr/lib/jvm/jre-1.8.0-openjdk \
-    HIVE_HOME=/opt/apache-hive-${HIVE_VER}-bin \
+# ENV JAVA_HOME=/usr/lib/jvm/jre-1.8.0-openjdk \
+ENV HIVE_HOME=/opt/apache-hive-${HIVE_VER}-bin \
     SPARK_HOME=/opt/spark-${SPARK_VER}-bin-without-hadoop \
     HADOOP_HOME=/opt/hadoop-${HADOOP_VER}
 
@@ -46,8 +46,7 @@ ENV PATH="${PATH}:${SPARK_HOME}/bin:${HIVE_HOME}/bin:${HADOOP_HOME}/bin"
 
 ENV SPARK_DIST_CLASSPATH="${HADOOP_HOME}/etc/hadoop:${HADOOP_HOME}/share/hadoop/common/lib/*:${HADOOP_HOME}/share/hadoop/common/*:${HADOOP_HOME}/share/hadoop/hdfs:${HADOOP_HOME}/share/hadoop/hdfs/lib/*:${HADOOP_HOME}/share/hadoop/hdfs/*:${HADOOP_HOME}/share/hadoop/yarn:${HADOOP_HOME}/share/hadoop/yarn/lib/*:${HADOOP_HOME}/share/hadoop/yarn/*:${HADOOP_HOME}/share/hadoop/mapreduce/lib/*:${HADOOP_HOME}/share/hadoop/mapreduce/*:${HADOOP_HOME}/contrib/capacity-scheduler/*.jar"
 
-RUN yum -y install java-1.8.0-openjdk which && \
-    ln -s ${SPARK_HOME} /opt/spark && \
+RUN ln -s ${SPARK_HOME} /opt/spark && \
     ln -s ${HADOOP_HOME} /opt/hadoop && \
     ln -s ${HIVE_HOME} /opt/hive
 

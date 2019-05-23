@@ -2,20 +2,23 @@ all: hiveserver
 hiveserver: build push clean
 .PHONY: build push clean
 
+# Base image of the container
+BASE_IMAGE = centos:centos7.5.1804
+# BASE_IMAGE = openjdk:8-jre
+
 SPARK_VER = 2.4.0
 HADOOP_VER = 3.1.1
 HIVE_VER = 3.1.1
 SCALA_VER = 2.11
-BASE_IMAGE = centos7.5.1804
 
-HIVE_VERSION= 3.1.1
-IMAGE_TAG = hive-$(HIVE_VERSION)
-
+# hive service's image and tag
 IMAGE_NAME = hiveserver
+IMAGE_TAG = hive-$(HIVE_VER)
+
+# Container registry info
+DOCKER = docker
 REGISTRY = docker.io
 REPO = praves77
-
-DOCKER = docker
 
 build:
 	$(DOCKER) build \
