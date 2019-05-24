@@ -37,7 +37,7 @@ ARG HADOOP_VER
 ARG HIVE_VER
 ARG SCALA_VER
 
-# ENV JAVA_HOME=/usr/lib/jvm/jre-1.8.0-openjdk \
+# ENV JAVA_HOME=/usr/lib/jvm/jre-1.8.0-openjdk
 ENV HIVE_HOME=/opt/apache-hive-${HIVE_VER}-bin \
     SPARK_HOME=/opt/spark-${SPARK_VER}-bin-without-hadoop \
     HADOOP_HOME=/opt/hadoop-${HADOOP_VER}
@@ -46,6 +46,7 @@ ENV PATH="${PATH}:${SPARK_HOME}/bin:${HIVE_HOME}/bin:${HADOOP_HOME}/bin"
 
 ENV SPARK_DIST_CLASSPATH="${HADOOP_HOME}/etc/hadoop:${HADOOP_HOME}/share/hadoop/common/lib/*:${HADOOP_HOME}/share/hadoop/common/*:${HADOOP_HOME}/share/hadoop/hdfs:${HADOOP_HOME}/share/hadoop/hdfs/lib/*:${HADOOP_HOME}/share/hadoop/hdfs/*:${HADOOP_HOME}/share/hadoop/yarn:${HADOOP_HOME}/share/hadoop/yarn/lib/*:${HADOOP_HOME}/share/hadoop/yarn/*:${HADOOP_HOME}/share/hadoop/mapreduce/lib/*:${HADOOP_HOME}/share/hadoop/mapreduce/*:${HADOOP_HOME}/contrib/capacity-scheduler/*.jar"
 
+# RUN yum -y install java-1.8.0-openjdk which
 RUN ln -s ${SPARK_HOME} /opt/spark && \
     ln -s ${HADOOP_HOME} /opt/hadoop && \
     ln -s ${HIVE_HOME} /opt/hive
@@ -57,5 +58,6 @@ COPY --from=builder /opt/build/ /opt/
 # ADD jars/aws-java-sdk-kms-1.11.414.jar /opt/hive/lib/
 # ADD jars/aws-java-sdk-s3-1.11.414.jar /opt/hive/lib/
 ADD jars/*.jar /opt/hive/lib/
+ADD jars/hadoop-${HADOOP_VER}/*.jar  /opt/hive/lib/
 
 CMD ["hiveserver2"]
